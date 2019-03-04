@@ -110,5 +110,5 @@ int check (int **mat,int n)
 
 
     return 1;
-
+ 
 }
