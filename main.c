@@ -1,110 +1,101 @@
 #include <stdio.h>
 #include <stdlib.h>
-int magic_matrix(int **mat,int *used,int n,int val);
-int check (int **mat,int n);
+int magic(int **mat,int n,int *used,int k);
+int check(int **mat,int n);
 int main()
 {
-    int i,j,**mat,*used,n,count;
-    n=3;//scanf("%d",&n);
+    int **mat,n=3,*used,i,j;
     mat=malloc(n*sizeof(int *));
-    if(mat==NULL)
-        {
-            printf("Error in memory allocation");
-            exit(0);
-        }
+    used=malloc((n*n+1)*sizeof(int ));
+    if(used==NULL||mat==NULL)
+    {
+        printf("Error in Memory Allocation");
+        exit(0);
+    }
     for(i=0;i<n;i++)
     {
-        mat[i]=malloc(n*sizeof(int));
+        mat[i]=malloc(n*sizeof(int ));
         if(mat[i]==NULL)
         {
-            printf("Error in memory allocation");
+            printf("Error in Memory Allocation");
             exit(0);
         }
     }
-    used=malloc((n*n+1)*sizeof(int));
-    if(used==NULL)
-        {
-            printf("Error in memory allocation");
-            exit(0);
-        }
     for(i=0;i<=n*n;i++)
     {
         used[i]=0;
     }
-    int result=magic_matrix(mat,used,n,0);
-    if(result==1)
-    {for(i=0;i<n;i++)
+    if(magic(mat,n,used,0))
     {
-        for(j=0;j<n;j++)
+        for(i=0;i<n;i++)
         {
-            printf(" %d",mat[i][j]);
-        }printf("\n");
-    }}
+            for(j=0;j<n;j++)
+            {
+                printf(" %d",mat[i][j]);
+            }printf("\n");
+        }
+    }
+    else
+    {
+        printf("Solution Not Found");
+    }
     return 0;
-
 }
-int magic_matrix(int **mat,int *used,int n,int val)
+int magic(int **mat,int n,int *used,int k)
 {
-    if(val==n*n)
+    if(k==n*n)
     {
         return check(mat,n);
     }
-    int r,c,k;
-    r=val/n;
-    c=val%n;
-    for(k=1;k<=n*n;k++)
+    int i=k/n,j=k%n,val;
+    for(val=1;val<=n*n;val++)
     {
-        if(used[k]==0)
+        if(used[val]==0)
         {
-            used[k]=1;
-            mat[r][c]=k;
-            if(magic_matrix(mat,used,n,val+1))
+            used[val]=1;
+            mat[i][j]=val;
+            if(magic(mat,n,used,k+1))
+            {
                 return 1;
-            used[k]=0;
+            }
+            used[val]=0;
+
         }
     }
-
     return 0;
 }
-int check (int **mat,int n)
+int check(int **mat,int n)
 {
-    int sum=0,i,j,target=n*(n*n+1)/2;
+    int i,j,sum,target=n*(n*n+1)/2;
     for(i=0;i<n;i++)
     {
+        sum=0;
         for(j=0;j<n;j++)
         {
             sum+=mat[i][j];
-        }
-        if(sum!=target)
+        }if(sum!=target)
             return 0;
-        sum=0;
     }
     for(i=0;i<n;i++)
     {
+        sum=0;
         for(j=0;j<n;j++)
         {
             sum+=mat[j][i];
-        }
-        if(sum!=target)
+        }if(sum!=target)
             return 0;
-        sum=0;
-    }i=0;j=0;sum=0;
-    while(i<n&&j<n)
-    {
-        sum+=mat[i++][j++];
     }
     sum=0;
-    if(sum!=target)
-        return 0;
-    i=0;j=n-1;sum=0;
-    while(i<n&&j>=0)
+    for(i=0;i<n;i++)
     {
-        sum+=mat[i++][j--];
-    }
-    if(sum!=target)
+        sum+=mat[i][i];
+    }if(sum!=target)
         return 0;
-
-
+    j=n-1;sum=0;
+    for(i=0;i<n;i++)
+    {
+        sum+=mat[i][j--];
+    }if(sum!=target)
+        return 0;
     return 1;
-
 }
